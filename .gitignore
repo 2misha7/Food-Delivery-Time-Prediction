@@ -9,3 +9,5 @@ __pycache__/
 
 # PyCharm project files (optional)
 .idea/
+
+models/
