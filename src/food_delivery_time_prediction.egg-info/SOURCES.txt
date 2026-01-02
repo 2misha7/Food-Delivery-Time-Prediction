@@ -1,8 +1,12 @@
 README.md
 pyproject.toml
 src/food_delivery_time/__init__.py
+src/food_delivery_time/automl.py
+src/food_delivery_time/automl_cli.py
 src/food_delivery_time/data.py
 src/food_delivery_time/model.py
+src/food_delivery_time/schemas.py
+src/food_delivery_time/service.py
 src/food_delivery_time_prediction.egg-info/PKG-INFO
 src/food_delivery_time_prediction.egg-info/SOURCES.txt
 src/food_delivery_time_prediction.egg-info/dependency_links.txt

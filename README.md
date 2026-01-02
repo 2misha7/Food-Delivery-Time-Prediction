@@ -14,3 +14,13 @@ Backend converts JSON → pandas DataFrame.
 Model is trained and saved as a new version name.
 
 The API supports any dataset size; for testing and demonstration we used subsets. The same endpoint can be used with the full dataset without code changes.
+
+how to use pycaret: 
+
+  - Train and save best model: python -m food_delivery_time.automl_cli train data/deliverytime.csv --target Delivery_Time_min --model-name my-best-model
+  - Predict: python -m food_delivery_time.automl_cli predict my-best-model data/deliverytime.csv --output predictions.csv
+  - Score on labeled data: python -m food_delivery_time.automl_cli score my-best-model data/deliverytime.csv --target Delivery_Time_min
+
+how to use optuna:
+
+ python -m food_delivery_time.optuna_cli data/deliverytime.csv --target Delivery_Time_min --n-trials 50 --model-name optuna-best     
