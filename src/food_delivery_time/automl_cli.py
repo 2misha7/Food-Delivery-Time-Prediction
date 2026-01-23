@@ -5,7 +5,6 @@ from typing import Optional
 
 import pandas as pd
 import typer
-
 from food_delivery_time import automl
 
 app = typer.Typer(help="PyCaret AutoML utilities for food delivery time prediction.")

@@ -5,11 +5,10 @@ from typing import Any
 
 import optuna
 import pandas as pd
+from food_delivery_time.service import ID, TARGET, _prepare_Xy_train, save_artifact
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import KFold, cross_val_score
-
-from food_delivery_time.service import ID, TARGET, _prepare_Xy_train, save_artifact
 
 
 def _objective(trial: optuna.Trial, X: pd.DataFrame, y: pd.Series) -> float:

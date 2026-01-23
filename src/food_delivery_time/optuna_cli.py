@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import typer
-
 from food_delivery_time import optuna_tuner
 
 app = typer.Typer(help="Optuna hyperparameter search for the food delivery model.")
