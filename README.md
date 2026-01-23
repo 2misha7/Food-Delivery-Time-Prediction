@@ -23,4 +23,11 @@ how to use pycaret:
 
 how to use optuna:
 
- python -m food_delivery_time.optuna_cli data/deliverytime.csv --target Delivery_Time_min --n-trials 50 --model-name optuna-best     
+ python -m food_delivery_time.optuna_cli data/deliverytime.csv --target Delivery_Time_min --n-trials 50 --model-name optuna-best   
+
+
+ Sprint 4
+
+ Implemented a local Ansible-based deployment for a Dockerized FastAPI service
+ How to run app from Ansible ansible-playbook -i inventory.yaml playbook.yaml -K
+ How to run app from Docker docker run --rm -p 8000:8000 food-delivery
