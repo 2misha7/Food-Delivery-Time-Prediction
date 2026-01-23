@@ -1,0 +1,101 @@
+---
+- name: Deploy food delivery time prediction service
+  hosts: all
+  become: true
+  vars:
+    ansible_python_interpreter: "{{ ansible_playbook_python }}"
+    project_root: "{{ playbook_dir }}"
+    dockerfile_path: "Dockerfile"
+    image_name: "food-delivery-time:latest"
+    container_name: "asi_project"
+    app_port: 8000
+    local_image_tar: "/tmp/food-delivery-time.tar"
+    remote_image_tar: "/tmp/food-delivery-time.tar"
+    remote_app_dir: "/opt/food-delivery-time"
+    remote_models_dir: "/opt/food-delivery-time/models"
+    host_data_dir: "{{ playbook_dir }}/data"
+  tasks:
+    - name: Ensure app directories exist under /opt
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - "{{ remote_app_dir }}"
+        - "{{ remote_models_dir }}"
+
+    - name: Ensure host data directory exists
+      ansible.builtin.file:
+        path: "{{ host_data_dir }}"
+        state: directory
+        mode: "0755"
+      become: false
+
+    - name: Build image locally
+      community.docker.docker_image:
+        name: "{{ image_name }}"
+        source: build
+        build:
+          path: "{{ project_root }}"
+          dockerfile: "{{ dockerfile_path }}"
+      delegate_to: localhost
+      run_once: true
+      become: false
+
+    - name: Save image to tar locally
+      community.docker.docker_image:
+        name: "{{ image_name }}"
+        source: local
+        archive_path: "{{ local_image_tar }}"
+      delegate_to: localhost
+      run_once: true
+      become: false
+
+    - name: Copy image tar to remote host
+      ansible.builtin.copy:
+        src: "{{ local_image_tar }}"
+        dest: "{{ remote_image_tar }}"
+        mode: "0644"
+
+    - name: Load image on remote host
+      community.docker.docker_image:
+        name: "{{ image_name }}"
+        load_path: "{{ remote_image_tar }}"
+        source: load
+
+    - name: Run application container
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        image: "{{ image_name }}"
+        state: started
+        restart_policy: unless-stopped
+        recreate: true
+        command:
+          - uv
+          - run
+          - --
+          - fastapi
+          - dev
+          - --host
+          - "0.0.0.0"
+          - --port
+          - "8000"
+          - main.py
+        ports:
+          - "{{ app_port }}:8000"
+        volumes:
+          - "{{ remote_models_dir }}:/app/models"
+          - "{{ host_data_dir }}:/app/data"
+
+    - name: Remove remote image tar
+      ansible.builtin.file:
+        path: "{{ remote_image_tar }}"
+        state: absent
+
+    - name: Remove local image tar
+      ansible.builtin.file:
+        path: "{{ local_image_tar }}"
+        state: absent
+      delegate_to: localhost
+      run_once: true
+      become: false

@@ -116,8 +116,6 @@ def continue_train_from_rows(
         )
     except FileNotFoundError:
         model = RandomForestRegressor(random_state=42)
-
-
     model.fit(X_train, y_train)
 
     # MAE on test split
